@@ -29,18 +29,9 @@ pipeline {
         stage('Deploying React.js container to Kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(
-                        configs: [
-                            kubernetesDeployConfig(
-                                configMap: 'deployment.yaml',
-                                enableConfigSubstitution: true
-                            ),
-                            kubernetesDeployConfig(
-                                configMap: 'service.yaml',
-                                enableConfigSubstitution: true
-                            )
-                        ]
-                    )
+                    sh "sed -i 's,TEST_IMAGE_NAME,${dockerImageName}:latest,' deployment.yaml"
+                    sh "kubectl apply -f deployment.yaml"
+                    sh "kubectl apply -f service.yaml"
                 }
             }
         }
