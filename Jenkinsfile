@@ -10,14 +10,14 @@ pipeline {
                 git 'https://github.com/almakarma237/jenkins-kubernetes-deployment.git'
             }
         }
-        stage('Build image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     dockerImage = docker.build dockerImageName
                 }
             }
         }
-        stage('Pushing Image') {
+        stage('Push Docker Image to Registry') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploying React.js container to Kubernetes') {
+        stage('Deploy React.js Container to Kubernetes') {
             steps {
                 script {
                     sh "sed -i 's,TEST_IMAGE_NAME,${dockerImageName}:latest,' deployment.yaml"
